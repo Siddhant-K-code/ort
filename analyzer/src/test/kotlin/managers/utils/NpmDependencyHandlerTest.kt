@@ -20,6 +20,7 @@
 package org.ossreviewtoolkit.analyzer.managers.utils
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -76,6 +77,7 @@ class NpmDependencyHandlerTest : StringSpec({
             id shouldBe Identifier("NPM", "", "bonjour", "3.5.0")
             declaredLicenses should containExactly("MIT")
             authors should containExactly("Thomas Watson Steen")
+            copyrightHolders should beEmpty()
             homepageUrl shouldBe "https://github.com/watson/bonjour/local"
             description shouldBe "A Bonjour/Zeroconf implementation in pure JavaScript (local)"
         }

@@ -35,5 +35,15 @@ class DefaultLicenseInfoProviderTest : WordSpec({
         "contain author information for project" {
             defaultLicenseInfoProvider.get(project.id).declaredLicenseInfo.authors shouldBe projectAuthors
         }
+
+        "contain copyright holder information for package" {
+            defaultLicenseInfoProvider.get(packageWithCopyrightHolders.id)
+                .declaredLicenseInfo.copyrights shouldBe declaredCopyrights
+        }
+
+        "contain copyright holder information for project" {
+            defaultLicenseInfoProvider.get(project.id).declaredLicenseInfo
+                .copyrights shouldBe projectDeclaredCopyrights
+        }
     }
 })

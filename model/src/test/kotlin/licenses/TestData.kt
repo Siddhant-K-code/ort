@@ -51,7 +51,10 @@ import org.ossreviewtoolkit.utils.ort.Environment
 import org.ossreviewtoolkit.utils.spdx.toSpdx
 
 val authors = sortedSetOf("The Author", "The Other Author")
+val declaredCopyrights = sortedSetOf("Copyright, the package author")
+
 val projectAuthors = sortedSetOf("The Project Author")
+val projectDeclaredCopyrights = sortedSetOf("Copyright, the project author")
 
 val concludedLicense = "LicenseRef-a AND LicenseRef-b".toSpdx()
 val declaredLicenses = sortedSetOf("LicenseRef-a", "LicenseRef-b")
@@ -65,6 +68,11 @@ val licenseFindings = sortedSetOf(
 val packageWithAuthors = Package.EMPTY.copy(
     id = Identifier("Maven:org.ossreviewtoolkit:package-with-authors:1.0"),
     authors = authors
+)
+
+val packageWithCopyrightHolders = Package.EMPTY.copy(
+    id = Identifier("Maven:org.ossreviewtoolkit:package-with-copyright-holders:1.0"),
+    copyrightHolders = declaredCopyrights
 )
 
 val packageWithoutLicense = Package.EMPTY.copy(
@@ -113,6 +121,7 @@ val packageWithConcludedAndDeclaredAndDetectedLicense = Package.EMPTY.copy(
 
 val allPackages = listOf(
     packageWithAuthors,
+    packageWithCopyrightHolders,
     packageWithoutLicense,
     packageWithConcludedLicense,
     packageWithDeclaredLicense,
@@ -137,6 +146,7 @@ val project = Project.EMPTY.copy(
     id = Identifier("Maven:org.ossreviewtoolkit:project-included:1.0"),
     definitionFilePath = "included/pom.xml",
     authors = projectAuthors,
+    copyrightHolders = projectDeclaredCopyrights,
     scopeDependencies = sortedSetOf(scope)
 )
 
