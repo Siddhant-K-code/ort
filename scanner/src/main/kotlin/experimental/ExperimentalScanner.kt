@@ -36,6 +36,7 @@ import org.apache.logging.log4j.kotlin.Logging
 
 import org.ossreviewtoolkit.downloader.DownloadException
 import org.ossreviewtoolkit.model.AccessStatistics
+import org.ossreviewtoolkit.model.CuratedPackage
 import org.ossreviewtoolkit.model.Identifier
 import org.ossreviewtoolkit.model.KnownProvenance
 import org.ossreviewtoolkit.model.OrtIssue
@@ -97,8 +98,10 @@ class ExperimentalScanner(
         }
 
         val packageResults = if (packageScannerWrappers.isNotEmpty()) {
-            val packages = ortResult.getPackages(skipExcluded).map { it.pkg }.filterNotConcluded()
-                .filterNotMetaDataOnly().toSet()
+            val packages = ortResult.getPackages(skipExcluded)
+                .filterNotConcluded()
+                .filterNotMetaDataOnly()
+                .mapTo(mutableSetOf()) { it.pkg }
 
             logger.info { "Scanning ${packages.size} package(s) with ${packageScannerWrappers.size} scanner(s)." }
 
@@ -359,9 +362,9 @@ class ExperimentalScanner(
         }
     }
 
-    private fun Collection<Package>.filterNotConcluded(): Collection<Package> =
+    private fun Collection<CuratedPackage>.filterNotConcluded(): Collection<CuratedPackage> =
         takeUnless { scannerConfig.skipConcluded }
-            ?: partition { it.concludedLicense != null && it.authors.isNotEmpty() }.let { (skip, keep) ->
+            ?: partition { it.concludedLicense != null && it.pkg.authors.isNotEmpty() }.let { (skip, keep) ->
                 if (skip.isNotEmpty()) {
                     logger.debug {
                         "Not scanning the following package(s) with concluded licenses: $skip"
@@ -371,8 +374,8 @@ class ExperimentalScanner(
                 keep
             }
 
-    private fun Collection<Package>.filterNotMetaDataOnly(): List<Package> =
-        partition { it.isMetaDataOnly }.let { (skip, keep) ->
+    private fun Collection<CuratedPackage>.filterNotMetaDataOnly(): List<CuratedPackage> =
+        partition { it.pkg.isMetaDataOnly }.let { (skip, keep) ->
             if (skip.isNotEmpty()) {
                 logger.debug {
                     "Not scanning the following package(s) which are metadata only: $skip"

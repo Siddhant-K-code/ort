@@ -30,6 +30,7 @@ import kotlinx.coroutines.runBlocking
 import org.apache.logging.log4j.kotlin.Logging
 
 import org.ossreviewtoolkit.downloader.consolidateProjectPackagesByVcs
+import org.ossreviewtoolkit.model.CuratedPackage
 import org.ossreviewtoolkit.model.OrtResult
 import org.ossreviewtoolkit.model.Package
 import org.ossreviewtoolkit.model.Project
@@ -45,10 +46,10 @@ import org.ossreviewtoolkit.utils.ort.Environment
 
 const val TOOL_NAME = "scanner"
 
-private fun removeConcludedPackages(packages: Set<Package>, scanner: Scanner): Set<Package> =
+private fun removeConcludedPackages(packages: Set<CuratedPackage>, scanner: Scanner): Set<CuratedPackage> =
     packages.takeUnless { scanner.scannerConfig.skipConcluded }
         // Remove all packages that have a concluded license and authors set.
-        ?: packages.partition { it.concludedLicense != null && it.authors.isNotEmpty() }.let { (skip, keep) ->
+        ?: packages.partition { it.concludedLicense != null && it.pkg.authors.isNotEmpty() }.let { (skip, keep) ->
             if (skip.isNotEmpty()) {
                 Scanner.logger.debug { "Not scanning the following packages with concluded licenses: $skip" }
             }
@@ -105,9 +106,9 @@ fun scanOrtResult(
 
     // Determine the projects to scan as packages.
     val consolidatedProjects = consolidateProjectPackagesByVcs(ortResult.getProjects(skipExcluded))
-    val projectPackages = consolidatedProjects.keys
+    val projectPackages = consolidatedProjects.keys.mapTo(mutableSetOf()) { CuratedPackage(it) }
 
-    val packages = ortResult.getPackages(skipExcluded).map { it.pkg }
+    val packages = ortResult.getPackages(skipExcluded)
 
     val scanResults = runBlocking {
         val deferredProjectScan = async {
@@ -115,6 +116,7 @@ fun scanOrtResult(
             else {
                 // Scan the projects from the ORT result.
                 val filteredProjectPackages = removeConcludedPackages(projectPackages, projectScanner)
+                    .mapTo(mutableSetOf()) { it.pkg }
 
                 if (filteredProjectPackages.isEmpty()) emptyMap()
                 else projectScanner.scanPackages(filteredProjectPackages, ortResult.labels).mapKeys { it.key.id }
@@ -125,7 +127,8 @@ fun scanOrtResult(
             if (packageScanner == null) emptyMap()
             else {
                 // Scan the packages from the ORT result.
-                val filteredPackages = removeConcludedPackages(packages.toSet(), packageScanner)
+                val filteredPackages = removeConcludedPackages(packages, packageScanner)
+                    .mapTo(mutableSetOf()) { it.pkg }
 
                 if (filteredPackages.isEmpty()) emptyMap()
                 else packageScanner.scanPackages(filteredPackages, ortResult.labels).mapKeys { it.key.id }

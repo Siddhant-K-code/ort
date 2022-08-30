@@ -75,15 +75,6 @@ data class Package(
     val declaredLicensesProcessed: ProcessedDeclaredLicense = DeclaredLicenseProcessor.process(declaredLicenses),
 
     /**
-     * The concluded license as an [SpdxExpression]. It can be used to override the [declared][declaredLicenses] /
-     * [detected][LicenseFinding.license] licenses of a package.
-     *
-     * ORT itself does not set this field, it needs to be set by the user using a [PackageCuration].
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    val concludedLicense: SpdxExpression? = null,
-
-    /**
      * The description of the package, as provided by the package manager.
      */
     val description: String,
@@ -140,7 +131,6 @@ data class Package(
             authors = sortedSetOf(),
             declaredLicenses = sortedSetOf(),
             declaredLicensesProcessed = ProcessedDeclaredLicense.EMPTY,
-            concludedLicense = null,
             description = "",
             homepageUrl = "",
             binaryArtifact = RemoteArtifact.EMPTY,

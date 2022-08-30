@@ -26,8 +26,8 @@ import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.containAll
 import io.kotest.matchers.should
 
+import org.ossreviewtoolkit.model.CuratedPackage
 import org.ossreviewtoolkit.model.LicenseSource
-import org.ossreviewtoolkit.model.Package
 import org.ossreviewtoolkit.model.config.CopyrightGarbage
 import org.ossreviewtoolkit.model.utils.FileArchiver
 import org.ossreviewtoolkit.model.utils.PackageConfigurationProvider
@@ -44,9 +44,9 @@ class LicenseViewTest : WordSpec() {
     )
 
     private fun LicenseView.getLicensesWithSources(
-        pkg: Package
+        pkg: CuratedPackage
     ): List<Pair<SpdxSingleLicenseExpression, LicenseSource>> =
-        filter(licenseInfoResolver.resolveLicenseInfo(pkg.id)).licenses.flatMap { resolvedLicense ->
+        filter(licenseInfoResolver.resolveLicenseInfo(pkg.pkg.id)).licenses.flatMap { resolvedLicense ->
             resolvedLicense.sources.map { resolvedLicense.license to it }
         }
 

@@ -51,10 +51,10 @@ class DefaultLicenseInfoProvider(
         )
 
     private fun createConcludedLicenseInfo(id: Identifier): ConcludedLicenseInfo =
-        ortResult.getPackage(id)?.let { (pkg, curations) ->
+        ortResult.getPackage(id)?.let { pkg ->
             ConcludedLicenseInfo(
                 concludedLicense = pkg.concludedLicense,
-                appliedCurations = curations.filter { it.curation.concludedLicense != null }
+                appliedCurations = pkg.curations.filter { it.curation.concludedLicense != null }
             )
         } ?: ConcludedLicenseInfo(concludedLicense = null, appliedCurations = emptyList())
 
@@ -66,12 +66,12 @@ class DefaultLicenseInfoProvider(
                 processed = project.declaredLicensesProcessed,
                 appliedCurations = emptyList()
             )
-        } ?: ortResult.getPackage(id)?.let { (pkg, curations) ->
+        } ?: ortResult.getPackage(id)?.let { pkg ->
             DeclaredLicenseInfo(
-                authors = pkg.authors,
-                licenses = pkg.declaredLicenses,
-                processed = pkg.declaredLicensesProcessed,
-                appliedCurations = curations.filter { it.curation.declaredLicenseMapping.isNotEmpty() }
+                authors = pkg.pkg.authors,
+                licenses = pkg.pkg.declaredLicenses,
+                processed = pkg.pkg.declaredLicensesProcessed,
+                appliedCurations = pkg.curations.filter { it.curation.declaredLicenseMapping.isNotEmpty() }
             )
         } ?: DeclaredLicenseInfo(
             authors = sortedSetOf(),

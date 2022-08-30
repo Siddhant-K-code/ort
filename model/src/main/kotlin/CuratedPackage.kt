@@ -20,6 +20,7 @@
 package org.ossreviewtoolkit.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 
 import org.ossreviewtoolkit.utils.ort.DeclaredLicenseProcessor
@@ -35,6 +36,13 @@ data class CuratedPackage(
      */
     @JsonProperty("package")
     val pkg: Package,
+
+    /**
+     * The concluded license as an [SpdxExpression]. It can be used to override the [declared][declaredLicenses] /
+     * [detected][LicenseFinding.license] licenses of a package.
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    val concludedLicense: SpdxExpression? = null,
 
     /**
      * The curations in the order they were applied.
@@ -54,13 +62,7 @@ data class CuratedPackage(
             curation.base.apply(current)
         }.pkg.copy(
             // The declared license mapping cannot be reversed as it is additive.
-            declaredLicensesProcessed = DeclaredLicenseProcessor.process(pkg.declaredLicenses),
-
-            // It is not possible to derive the original concluded license value with the above reversed application
-            // of the base curations, even if the function Package.diff() was extended to handle the concluded license,
-            // see also https://github.com/oss-review-toolkit/ort/issues/5637. Until this is fixed just set the
-            // concluded license to null, because an un-curated package cannot have a non-null concluded license.
-            concludedLicense = null
+            declaredLicensesProcessed = DeclaredLicenseProcessor.process(pkg.declaredLicenses)
         )
 
     @JsonIgnore

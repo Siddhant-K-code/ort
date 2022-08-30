@@ -305,7 +305,7 @@ internal class EvaluatedModelMapper(private val input: ReporterInput) {
             declaredLicensesProcessed = pkg.declaredLicensesProcessed.evaluate(),
             detectedLicenses = detectedLicenses,
             detectedExcludedLicenses = detectedExcludedLicenses,
-            concludedLicense = pkg.concludedLicense,
+            concludedLicense = curatedPkg.concludedLicense,
             description = pkg.description,
             homepageUrl = pkg.homepageUrl,
             binaryArtifact = pkg.binaryArtifact,

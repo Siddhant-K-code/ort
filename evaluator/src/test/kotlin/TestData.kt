@@ -68,65 +68,73 @@ val concludedLicense = "LicenseRef-a OR LicenseRef-b OR LicenseRef-c or LicenseR
 val declaredLicenses = sortedSetOf("Apache-2.0", "MIT")
 val declaredLicensesProcessed = DeclaredLicenseProcessor.process(declaredLicenses)
 
-val packageExcluded = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:package-excluded:1.0")
+val packageExcluded = CuratedPackage(
+    pkg = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-excluded:1.0"))
 )
 
-val packageDynamicallyLinked = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:package-dynamically-linked:1.0")
+val packageDynamicallyLinked = CuratedPackage(
+    pkg = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-dynamically-linked:1.0"))
 )
 
-val packageStaticallyLinked = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:package-statically-linked:1.0")
+val packageStaticallyLinked = CuratedPackage(
+    pkg = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-statically-linked:1.0"))
 )
 
-val packageWithoutLicense = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:package-without-license:1.0")
+val packageWithoutLicense = CuratedPackage(
+    pkg = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-without-license:1.0"))
 )
 
-val packageWithNotPresentLicense = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:package-with-not-present-license:1.0"),
+val packageWithNotPresentLicense = CuratedPackage(
+    pkg = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-with-not-present-license:1.0")),
     concludedLicense = "${SpdxConstants.NONE} OR ${SpdxConstants.NOASSERTION}".toSpdx()
 )
 
-val packageWithOnlyConcludedLicense = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:package-with-only-concluded-license:1.0"),
+val packageWithOnlyConcludedLicense = CuratedPackage(
+    pkg = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-with-only-concluded-license:1.0")),
     concludedLicense = concludedLicense
 )
 
-val packageWithOnlyDeclaredLicense = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:package-with-only-declared-license:1.0"),
-    declaredLicenses = declaredLicenses,
-    declaredLicensesProcessed = declaredLicensesProcessed
+val packageWithOnlyDeclaredLicense = CuratedPackage(
+    pkg = Package.EMPTY.copy(
+        id = Identifier("Maven:org.ossreviewtoolkit:package-with-only-declared-license:1.0"),
+        declaredLicenses = declaredLicenses,
+        declaredLicensesProcessed = declaredLicensesProcessed
+    )
 )
 
-val packageWithOnlyDetectedLicense = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:package-with-only-detected-license:1.0")
+val packageWithOnlyDetectedLicense = CuratedPackage(
+    pkg = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-with-only-detected-license:1.0"))
     // Detected license for this package is added in the ortResult.
 )
 
-val packageWithConcludedAndDeclaredLicense = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:package-with-concluded-and-declared-license:1.0"),
-    concludedLicense = concludedLicense,
-    declaredLicenses = declaredLicenses,
-    declaredLicensesProcessed = declaredLicensesProcessed
+val packageWithConcludedAndDeclaredLicense = CuratedPackage(
+    pkg = Package.EMPTY.copy(
+        id = Identifier("Maven:org.ossreviewtoolkit:package-with-concluded-and-declared-license:1.0"),
+        declaredLicenses = declaredLicenses,
+        declaredLicensesProcessed = declaredLicensesProcessed
+    ),
+    concludedLicense = concludedLicense
 )
 
-val packageWithVulnerabilities = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:package-with-vulnerabilities:1.0")
+val packageWithVulnerabilities = CuratedPackage(
+    pkg = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-with-vulnerabilities:1.0"))
 )
 
-val packageMetaDataOnly = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:package-metadata-only:1.0"),
-    isMetaDataOnly = true
+val packageMetaDataOnly = CuratedPackage(
+    pkg = Package.EMPTY.copy(
+        id = Identifier("Maven:org.ossreviewtoolkit:package-metadata-only:1.0"),
+        isMetaDataOnly = true
+    )
 )
 
-val packageDependency = Package.EMPTY.copy(
-    id = Identifier("Maven:org.ossreviewtoolkit:common-lib:1.0"),
-    declaredLicenses = declaredLicenses
+val packageDependency = CuratedPackage(
+    pkg = Package.EMPTY.copy(
+        id = Identifier("Maven:org.ossreviewtoolkit:common-lib:1.0"),
+        declaredLicenses = declaredLicenses
+    )
 )
 
-val allPackages = listOf(
+val allPackages = sortedSetOf(
     packageExcluded,
     packageDynamicallyLinked,
     packageStaticallyLinked,
@@ -142,7 +150,7 @@ val allPackages = listOf(
 val scopeExcluded = Scope(
     name = "compile",
     dependencies = sortedSetOf(
-        packageExcluded.toReference()
+        packageExcluded.pkg.toReference()
     )
 )
 
@@ -152,20 +160,20 @@ val projectExcluded = Project.EMPTY.copy(
     scopeDependencies = sortedSetOf(scopeExcluded)
 )
 
-val packageRefDynamicallyLinked = packageDynamicallyLinked.toReference(PackageLinkage.DYNAMIC)
-val packageRefStaticallyLinked = packageStaticallyLinked.toReference(PackageLinkage.STATIC)
+val packageRefDynamicallyLinked = packageDynamicallyLinked.pkg.toReference(PackageLinkage.DYNAMIC)
+val packageRefStaticallyLinked = packageStaticallyLinked.pkg.toReference(PackageLinkage.STATIC)
 
 val scopeIncluded = Scope(
     name = "compile",
     dependencies = sortedSetOf(
-        packageWithoutLicense.toReference(),
-        packageWithNotPresentLicense.toReference(),
-        packageWithOnlyConcludedLicense.toReference(),
-        packageWithOnlyDeclaredLicense.toReference(dependencies = sortedSetOf(packageDependency.toReference())),
-        packageWithConcludedAndDeclaredLicense.toReference(),
+        packageWithoutLicense.pkg.toReference(),
+        packageWithNotPresentLicense.pkg.toReference(),
+        packageWithOnlyConcludedLicense.pkg.toReference(),
+        packageWithOnlyDeclaredLicense.pkg.toReference(dependencies = sortedSetOf(packageDependency.pkg.toReference())),
+        packageWithConcludedAndDeclaredLicense.pkg.toReference(),
         packageRefDynamicallyLinked,
         packageRefStaticallyLinked,
-        packageMetaDataOnly.toReference()
+        packageMetaDataOnly.pkg.toReference()
     )
 )
 
@@ -219,7 +227,7 @@ val ortResult = OrtResult(
                 projectExcluded,
                 projectIncluded
             ),
-            packages = allPackages.mapTo(sortedSetOf()) { CuratedPackage(it) }
+            packages = allPackages
         )
     ),
     advisor = AdvisorRun(
@@ -229,7 +237,7 @@ val ortResult = OrtResult(
         config = AdvisorConfiguration(),
         results = AdvisorRecord(
             advisorResults = sortedMapOf(
-                packageWithVulnerabilities.id to listOf(
+                packageWithVulnerabilities.pkg.id to listOf(
                     AdvisorResult(
                         advisor = AdvisorDetails.EMPTY,
                         summary = AdvisorSummary(startTime = Instant.EPOCH, endTime = Instant.EPOCH),
