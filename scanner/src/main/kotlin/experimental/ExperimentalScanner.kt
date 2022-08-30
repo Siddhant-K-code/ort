@@ -101,7 +101,7 @@ class ExperimentalScanner(
             val packages = ortResult.getPackages(skipExcluded)
                 .filterNotConcluded()
                 .filterNotMetaDataOnly()
-                .mapTo(mutableSetOf()) { it.pkg }
+                .mapTo(mutableSetOf()) { it.metadata }
 
             logger.info { "Scanning ${packages.size} package(s) with ${packageScannerWrappers.size} scanner(s)." }
 
@@ -364,7 +364,7 @@ class ExperimentalScanner(
 
     private fun Collection<CuratedPackage>.filterNotConcluded(): Collection<CuratedPackage> =
         takeUnless { scannerConfig.skipConcluded }
-            ?: partition { it.concludedLicense != null && it.pkg.authors.isNotEmpty() }.let { (skip, keep) ->
+            ?: partition { it.concludedLicense != null && it.metadata.authors.isNotEmpty() }.let { (skip, keep) ->
                 if (skip.isNotEmpty()) {
                     logger.debug {
                         "Not scanning the following package(s) with concluded licenses: $skip"
@@ -375,7 +375,7 @@ class ExperimentalScanner(
             }
 
     private fun Collection<CuratedPackage>.filterNotMetaDataOnly(): List<CuratedPackage> =
-        partition { it.pkg.isMetaDataOnly }.let { (skip, keep) ->
+        partition { it.metadata.isMetaDataOnly }.let { (skip, keep) ->
             if (skip.isNotEmpty()) {
                 logger.debug {
                     "Not scanning the following package(s) which are metadata only: $skip"

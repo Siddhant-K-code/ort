@@ -306,13 +306,13 @@ class OpossumReporter : Reporter {
             }
         }
 
-        private fun signalFromPkg(pkg: CuratedPackage, id: Identifier = pkg.pkg.id): OpossumSignal {
+        private fun signalFromPkg(pkg: CuratedPackage, id: Identifier = pkg.metadata.id): OpossumSignal {
             val source = addExternalAttributionSource("ORT-Package", "ORT-Package", 180)
             return OpossumSignal(
                 source,
                 id = id,
-                url = pkg.pkg.homepageUrl,
-                license = pkg.concludedLicense ?: pkg.pkg.declaredLicensesProcessed.spdxExpression,
+                url = pkg.metadata.homepageUrl,
+                license = pkg.concludedLicense ?: pkg.metadata.declaredLicensesProcessed.spdxExpression,
                 preselected = true
             )
         }
@@ -329,10 +329,10 @@ class OpossumReporter : Reporter {
                 resolvePath(listOf(relRoot, dependencyId.namespace, "${dependencyId.name}@${dependencyId.version}"))
 
             val dependencyPackage = curatedPackages
-                .find { curatedPackage -> curatedPackage.pkg.id == dependencyId }
+                .find { curatedPackage -> curatedPackage.metadata.id == dependencyId }
                 ?: CuratedPackage(Package.EMPTY)
 
-            addPackageRoot(dependencyId, dependencyPath, level, dependencyPackage.pkg.vcsProcessed)
+            addPackageRoot(dependencyId, dependencyPath, level, dependencyPackage.metadata.vcsProcessed)
 
             addSignal(signalFromPkg(dependencyPackage, dependencyId), sortedSetOf(dependencyPath))
 
@@ -490,12 +490,12 @@ class OpossumReporter : Reporter {
         }
 
         fun addPackagesThatAreRootless(analyzerResultPackages: SortedSet<CuratedPackage>) {
-            val rootlessPackages = analyzerResultPackages.filter { packageToRoot[it.pkg.id] == null }
+            val rootlessPackages = analyzerResultPackages.filter { packageToRoot[it.metadata.id] == null }
 
             rootlessPackages.forEach {
-                val path = resolvePath("/lost+found", it.pkg.id.toPurl())
+                val path = resolvePath("/lost+found", it.metadata.id.toPurl())
                 addSignal(signalFromPkg(it), sortedSetOf(path))
-                addPackageRoot(it.pkg.id, path, Int.MAX_VALUE, it.pkg.vcsProcessed)
+                addPackageRoot(it.metadata.id, path, Int.MAX_VALUE, it.metadata.vcsProcessed)
             }
 
             if (rootlessPackages.isNotEmpty()) {

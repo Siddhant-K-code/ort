@@ -63,23 +63,23 @@ val licenseFindings = sortedSetOf(
 )
 
 val packageWithAuthors = CuratedPackage(
-    pkg = Package.EMPTY.copy(
+    metadata = Package.EMPTY.copy(
         id = Identifier("Maven:org.ossreviewtoolkit:package-with-authors:1.0"),
         authors = authors
     )
 )
 
 val packageWithoutLicense = CuratedPackage(
-    pkg = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-without-license:1.0"))
+    metadata = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-without-license:1.0"))
 )
 
 val packageWithConcludedLicense = CuratedPackage(
-    pkg = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-with-concluded-license:1.0")),
+    metadata = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-with-concluded-license:1.0")),
     concludedLicense = concludedLicense
 )
 
 val packageWithDeclaredLicense = CuratedPackage(
-    pkg = Package.EMPTY.copy(
+    metadata = Package.EMPTY.copy(
         id = Identifier("Maven:org.ossreviewtoolkit:package-with-declared-license:1.0"),
         declaredLicenses = declaredLicenses,
         declaredLicensesProcessed = declaredLicensesProcessed
@@ -87,11 +87,11 @@ val packageWithDeclaredLicense = CuratedPackage(
 )
 
 val packageWithDetectedLicense = CuratedPackage(
-    pkg = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-with-detected-license:1.0"))
+    metadata = Package.EMPTY.copy(id = Identifier("Maven:org.ossreviewtoolkit:package-with-detected-license:1.0"))
 )
 
 val packageWithConcludedAndDeclaredLicense = CuratedPackage(
-    pkg = Package.EMPTY.copy(
+    metadata = Package.EMPTY.copy(
         id = Identifier("Maven:org.ossreviewtoolkit:package-with-concluded-and-declared-license:1.0"),
         declaredLicenses = declaredLicenses,
         declaredLicensesProcessed = declaredLicensesProcessed
@@ -100,14 +100,14 @@ val packageWithConcludedAndDeclaredLicense = CuratedPackage(
 )
 
 val packageWithConcludedAndDetectedLicense = CuratedPackage(
-    pkg = Package.EMPTY.copy(
+    metadata = Package.EMPTY.copy(
         id = Identifier("Maven:org.ossreviewtoolkit:package-with-concluded-and-detected-license:1.0")
     ),
     concludedLicense = concludedLicense
 )
 
 val packageWithDeclaredAndDetectedLicense = CuratedPackage(
-    pkg = Package.EMPTY.copy(
+    metadata = Package.EMPTY.copy(
         id = Identifier("Maven:org.ossreviewtoolkit:package-with-declared-and-detected-license:1.0"),
         declaredLicenses = declaredLicenses,
         declaredLicensesProcessed = declaredLicensesProcessed
@@ -115,7 +115,7 @@ val packageWithDeclaredAndDetectedLicense = CuratedPackage(
 )
 
 val packageWithConcludedAndDeclaredAndDetectedLicense = CuratedPackage(
-    pkg = Package.EMPTY.copy(
+    metadata = Package.EMPTY.copy(
         id = Identifier("Maven:org.ossreviewtoolkit:package-with-concluded-and-declared-and-detected-license:1.0"),
         declaredLicenses = declaredLicenses,
         declaredLicensesProcessed = declaredLicensesProcessed
@@ -138,10 +138,10 @@ val allPackages = sortedSetOf(
 val scope = Scope(
     name = "compile",
     dependencies = sortedSetOf(
-        packageWithoutLicense.pkg.toReference(),
-        packageWithConcludedLicense.pkg.toReference(),
-        packageWithDeclaredLicense.pkg.toReference(),
-        packageWithConcludedAndDeclaredLicense.pkg.toReference()
+        packageWithoutLicense.metadata.toReference(),
+        packageWithConcludedLicense.metadata.toReference(),
+        packageWithDeclaredLicense.metadata.toReference(),
+        packageWithConcludedAndDeclaredLicense.metadata.toReference()
     )
 )
 
@@ -160,7 +160,7 @@ val scanResults = listOf(
     packageWithDeclaredAndDetectedLicense,
     packageWithConcludedAndDeclaredAndDetectedLicense
 ).associateTo(sortedMapOf()) {
-    it.pkg.id to listOf(
+    it.metadata.id to listOf(
         ScanResult(
             provenance = provenance,
             scanner = ScannerDetails.EMPTY,

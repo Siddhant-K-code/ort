@@ -106,11 +106,11 @@ data class PackageCurationData(
     val declaredLicenseMapping: Map<String, SpdxExpression> = emptyMap()
 ) {
     /**
-     * Apply the curation data to the provided [targetPackage] by overriding all values of the original package with
-     * non-null values of the curation data, and return the curated package.
+     * Apply the curation data to the provided [pkg] by overriding all values of the original package with non-null
+     * values of the curation data, and return the curated package.
      */
-    fun apply(targetPackage: CuratedPackage): CuratedPackage {
-        val original = targetPackage.pkg
+    fun apply(pkg: CuratedPackage): CuratedPackage {
+        val original = pkg.metadata
 
         val vcsProcessed = vcs?.let {
             // Curation data for VCS information is handled specially, so we can curate only individual properties.
@@ -122,13 +122,13 @@ data class PackageCurationData(
             ).normalize()
         } ?: original.vcsProcessed
 
-        val declaredLicenseMapping = targetPackage.getDeclaredLicenseMapping() + declaredLicenseMapping
+        val declaredLicenseMapping = pkg.getDeclaredLicenseMapping() + declaredLicenseMapping
         val declaredLicensesProcessed = DeclaredLicenseProcessor.process(
             original.declaredLicenses,
             declaredLicenseMapping
         )
 
-        val pkg = Package(
+        val metadata = Package(
             id = original.id,
             purl = purl ?: original.purl,
             cpe = cpe ?: original.cpe,
@@ -146,18 +146,18 @@ data class PackageCurationData(
         )
 
         val declaredLicenseMappingDiff = buildMap {
-            val previous = targetPackage.getDeclaredLicenseMapping().toList()
+            val previous = pkg.getDeclaredLicenseMapping().toList()
             val current = declaredLicenseMapping.toList()
 
             putAll(previous - current)
         }
 
-        val curations = targetPackage.curations + PackageCurationResult(
-            base = original.diff(pkg).copy(declaredLicenseMapping = declaredLicenseMappingDiff),
+        val curations = pkg.curations + PackageCurationResult(
+            base = original.diff(metadata).copy(declaredLicenseMapping = declaredLicenseMappingDiff),
             curation = this
         )
 
-        return CuratedPackage(pkg, concludedLicense ?: targetPackage.concludedLicense, curations)
+        return CuratedPackage(metadata, concludedLicense ?: pkg.concludedLicense, curations)
     }
 
     /**

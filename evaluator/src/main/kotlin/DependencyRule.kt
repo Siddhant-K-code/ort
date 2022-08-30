@@ -68,7 +68,7 @@ class DependencyRule(
                 "(project=${project.id.toCoordinates()}, scope=$scopeName, level=$level)."
 
     override fun issueSource() =
-        "$name - ${pkg.pkg.id.toCoordinates()} (dependency of ${project.id.toCoordinates()} in scope $scopeName)"
+        "$name - ${pkg.metadata.id.toCoordinates()} (dependency of ${project.id.toCoordinates()} in scope $scopeName)"
 
     /**
      * A [RuleMatcher] that checks if the level of the [dependency] inside the dependency tree equals [level].

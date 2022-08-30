@@ -33,7 +33,7 @@ class DependencyRuleTest : WordSpec() {
             ruleSet = ruleSet,
             name = "test",
             pkg = pkg,
-            resolvedLicenseInfo = ruleSet.licenseInfoResolver.resolveLicenseInfo(pkg.pkg.id),
+            resolvedLicenseInfo = ruleSet.licenseInfoResolver.resolveLicenseInfo(pkg.metadata.id),
             dependency = dependency,
             ancestors = emptyList(),
             level = 0,
@@ -44,14 +44,14 @@ class DependencyRuleTest : WordSpec() {
     init {
         "isAtTreeLevel()" should {
             "return true if the dependency is at the expected tree level" {
-                val rule = createRule(packageWithoutLicense, packageWithoutLicense.pkg.toReference())
+                val rule = createRule(packageWithoutLicense, packageWithoutLicense.metadata.toReference())
                 val matcher = rule.isAtTreeLevel(0)
 
                 matcher.matches() shouldBe true
             }
 
             "return false if the dependency is not at the expected tree level" {
-                val rule = createRule(packageWithoutLicense, packageWithoutLicense.pkg.toReference())
+                val rule = createRule(packageWithoutLicense, packageWithoutLicense.metadata.toReference())
                 val matcher = rule.isAtTreeLevel(1)
 
                 matcher.matches() shouldBe false
@@ -60,14 +60,14 @@ class DependencyRuleTest : WordSpec() {
 
         "isProjectFromOrg()" should {
             "return true if the project is from org" {
-                val rule = createRule(packageWithoutLicense, packageWithoutLicense.pkg.toReference())
+                val rule = createRule(packageWithoutLicense, packageWithoutLicense.metadata.toReference())
                 val matcher = rule.isProjectFromOrg("ossreviewtoolkit")
 
                 matcher.matches() shouldBe true
             }
 
             "return false if the project is not from org" {
-                val rule = createRule(packageWithoutLicense, packageWithoutLicense.pkg.toReference())
+                val rule = createRule(packageWithoutLicense, packageWithoutLicense.metadata.toReference())
                 val matcher = rule.isProjectFromOrg("unknown")
 
                 matcher.matches() shouldBe false

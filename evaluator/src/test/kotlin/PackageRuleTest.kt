@@ -38,7 +38,7 @@ class PackageRuleTest : WordSpec() {
             ruleSet = ruleSet,
             name = "test",
             pkg = pkg,
-            resolvedLicenseInfo = ruleSet.licenseInfoResolver.resolveLicenseInfo(pkg.pkg.id)
+            resolvedLicenseInfo = ruleSet.licenseInfoResolver.resolveLicenseInfo(pkg.metadata.id)
         )
 
     private fun PackageRule.createLicenseRule(license: SpdxSingleLicenseExpression, licenseSource: LicenseSource) =

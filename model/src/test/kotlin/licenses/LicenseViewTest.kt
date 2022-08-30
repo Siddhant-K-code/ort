@@ -46,7 +46,7 @@ class LicenseViewTest : WordSpec() {
     private fun LicenseView.getLicensesWithSources(
         pkg: CuratedPackage
     ): List<Pair<SpdxSingleLicenseExpression, LicenseSource>> =
-        filter(licenseInfoResolver.resolveLicenseInfo(pkg.pkg.id)).licenses.flatMap { resolvedLicense ->
+        filter(licenseInfoResolver.resolveLicenseInfo(pkg.metadata.id)).licenses.flatMap { resolvedLicense ->
             resolvedLicense.sources.map { resolvedLicense.license to it }
         }
 

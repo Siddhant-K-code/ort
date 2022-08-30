@@ -66,7 +66,7 @@ class RuleSet(
         }.orEmpty()
 
         packages.forEach { curatedPackage ->
-            val resolvedLicenseInfo = licenseInfoResolver.resolveLicenseInfo(curatedPackage.pkg.id)
+            val resolvedLicenseInfo = licenseInfoResolver.resolveLicenseInfo(curatedPackage.metadata.id)
             PackageRule(this, name, curatedPackage, resolvedLicenseInfo).apply {
                 configure()
                 evaluate()
@@ -101,7 +101,7 @@ class RuleSet(
             if (curatedPackage == null) {
                 logger.warn { "Could not find package for dependency ${node.id.toCoordinates()}, skipping rule $name." }
             } else {
-                val resolvedLicenseInfo = licenseInfoResolver.resolveLicenseInfo(curatedPackage.pkg.id)
+                val resolvedLicenseInfo = licenseInfoResolver.resolveLicenseInfo(curatedPackage.metadata.id)
 
                 DependencyRule(
                     this,

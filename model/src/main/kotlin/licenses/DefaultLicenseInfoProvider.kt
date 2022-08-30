@@ -68,9 +68,9 @@ class DefaultLicenseInfoProvider(
             )
         } ?: ortResult.getPackage(id)?.let { pkg ->
             DeclaredLicenseInfo(
-                authors = pkg.pkg.authors,
-                licenses = pkg.pkg.declaredLicenses,
-                processed = pkg.pkg.declaredLicensesProcessed,
+                authors = pkg.metadata.authors,
+                licenses = pkg.metadata.declaredLicenses,
+                processed = pkg.metadata.declaredLicensesProcessed,
                 appliedCurations = pkg.curations.filter { it.curation.declaredLicenseMapping.isNotEmpty() }
             )
         } ?: DeclaredLicenseInfo(

@@ -312,7 +312,7 @@ class SpdxDocumentFile(
         val artifact = getRemoteArtifact()
 
         return CuratedPackage(
-            pkg = Package(
+            metadata = Package(
                 id = id,
                 purl = locateExternalReference(SpdxExternalReference.Type.Purl) ?: id.toPurl(),
                 cpe = locateCpe(),
@@ -529,7 +529,7 @@ class SpdxDocumentFile(
             ProjectAnalyzerResult(
                 project = project,
                 // TODO: How to handle concluded licenses from an SPDX package?
-                packages = packages.mapTo(sortedSetOf()) { it.pkg }
+                packages = packages.mapTo(sortedSetOf()) { it.metadata }
             )
         )
     }
